@@ -1,4 +1,4 @@
-# Travel Itinerary & Expense Manager
+# Travel Itinerary 
 
 A collaborative CLI application for planning trips, managing activities, and tracking travel expenses.
 
@@ -48,4 +48,3 @@ src/
 └── cli.ts                 # Command-line interface
 ```
 
----
