@@ -33,3 +33,10 @@ export const getActivitiesByDate = (trip: Trip, date: Date): Activity[] => {
     );
   });
 };
+
+export const filterActivitiesByCategory = (
+  trip: Trip,
+  category: 'food' | 'transport' | 'sightseeing',
+): Activity[] => {
+  return trip.activities.filter((activity) => activity.category === category);
+};
