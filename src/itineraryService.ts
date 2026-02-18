@@ -46,3 +46,8 @@ export const sortActivitiesChronologically = (trip: Trip): Activity[] => {
     (a, b) => a.startTime.getTime() - b.startTime.getTime(),
   );
 };
+
+export const addActivity = (trip: Trip, activity: Activity): Activity[] => {
+  trip.activities.push(activity);
+  return trip.activities;
+};
