@@ -16,3 +16,10 @@ export const createTrip = (
   startDate,
   activities: [],
 });
+
+export const getHighCostActivities = (
+  trip: Trip,
+  minimumCost: number,
+): Activity[] => {
+  return trip.activities.filter((activity) => activity.cost >= minimumCost);
+};
