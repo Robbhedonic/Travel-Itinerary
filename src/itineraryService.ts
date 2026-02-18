@@ -1,4 +1,4 @@
-import { Trip } from './models.js';
+import { Trip, Activity } from './models.js';
 
 export const calculateTotalCost = (trip: Trip): number => {
   return trip.activities.reduce((sum, activity) => {
