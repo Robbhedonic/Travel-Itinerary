@@ -29,6 +29,8 @@ type Category = Activity['category'];
 const trips: Trip[] = [];
 let activeTripId: string | null = null;
 
+// Generic CLI helpers
+
 const pause = async (): Promise<void> => {
   await inquirer.prompt([
     { type: 'input', name: 'pause', message: 'Press Enter to continue...' },
@@ -83,4 +85,77 @@ const printActivities = (activities: Activity[]): void => {
     );
   });
   console.log('');
+};
+
+// Trip state helpers
+
+const getActiveTrip = (): Trip | undefined => {
+  if (activeTripId === null) return undefined;
+  return trips.find((t) => t.id === activeTripId);
+};
+
+const requireActiveTrip = async (): Promise<Trip | undefined> => {
+  const active = getActiveTrip();
+  if (active) return active;
+
+  if (trips.length === 0) {
+    console.log('\nYou have no trips yet. Create one first.\n');
+    await pause();
+    return undefined;
+  }
+
+  console.log('\nNo active trip selected.\n');
+  await selectActiveTrip();
+  return getActiveTrip();
+};
+
+// Budget Actions
+const actionSetBudget = async (): Promise<void> => {
+  const trip = await requireActiveTrip();
+  if (!trip) return;
+
+  const answers = (await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'budget',
+      message: 'Set budget (number):',
+      validate: (v: string) => {
+        const n = Number(v);
+        if (Number.isNaN(n)) return 'Must be a number.';
+        if (n < 0) return 'Must be >= 0.';
+        return true;
+      },
+      filter: (v: string) => Number(v),
+    },
+  ])) as { budget: number };
+
+  const newBudget = setBudget(trip, Number(answers.budget));
+  console.log(`\nBudget set to: ${newBudget}\n`);
+  await pause();
+};
+
+const actionRemainingBudget = async (): Promise<void> => {
+  const trip = await requireActiveTrip();
+  if (!trip) return;
+
+  try {
+    const remaining = getRemainingBudget(trip);
+    console.log(`\nRemaining budget: ${remaining}\n`);
+  } catch (e) {
+    console.log(`\n${e instanceof Error ? e.message : 'No budget set.'}\n`);
+  }
+
+  await pause();
+};
+
+const actionSpendingBreakdown = async (): Promise<void> => {
+  const trip = await requireActiveTrip();
+  if (!trip) return;
+
+  const breakdown = getSpendingByCategory(trip);
+  console.log(`\nSpending breakdown for "${trip.destination}":\n`);
+  console.log(`food: ${breakdown.food}`);
+  console.log(`transport: ${breakdown.transport}`);
+  console.log(`sightseeing: ${breakdown.sightseeing}\n`);
+  await pause();
 };
