@@ -380,6 +380,25 @@ const actionTotalCost = async (): Promise<void> => {
   await pause();
 };
 
+// Destination Actions
+const actionDestinationInfo = async (): Promise<void> => {
+  const trip = await requireActiveTrip();
+  if (!trip) return;
+
+  try {
+    const info = await getDestinationInfo(trip.destination);
+    console.log(
+      `\nDestination info for "${trip.destination}":\nCurrency: ${info.currency}\nFlag: ${info.flag}\n`,
+    );
+  } catch (e) {
+    console.log(
+      `\n${e instanceof Error ? e.message : 'Could not fetch info.'}\n`,
+    );
+  }
+
+  await pause();
+};
+
 // Budget Actions
 const actionSetBudget = async (): Promise<void> => {
   const trip = await requireActiveTrip();
